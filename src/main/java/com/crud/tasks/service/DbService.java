@@ -22,4 +22,12 @@ public class DbService {
     public Task getTaskById(long taskId) {
         return repository.findById(taskId).orElse(new Task(taskId, "No such taskId", "ERROR!"));
     }
+
+    public Task saveTask(final Task task) {
+        return repository.save(task);
+    }
+
+    public void deleteTask(long taskId) {
+        repository.deleteById(taskId);
+    }
 }
