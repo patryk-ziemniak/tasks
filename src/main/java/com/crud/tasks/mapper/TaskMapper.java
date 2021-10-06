@@ -31,5 +31,4 @@ public class TaskMapper {
                 .map(this::mapToTaskDto)
                 .collect(Collectors.toList());
     }
-
 }
