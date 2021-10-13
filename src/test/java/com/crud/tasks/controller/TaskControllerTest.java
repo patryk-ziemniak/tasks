@@ -55,7 +55,7 @@ class TaskControllerTest {
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .get("/v1/task/getTasks")
+                        .get("/v1/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(MockMvcResultMatchers.status().is(200))
@@ -80,46 +80,8 @@ class TaskControllerTest {
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .get("/v1/task/getTask?taskId=1")
+                        .get("/v1/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("test1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("desc1")));
-    }
-
-    @Test
-    public void shouldDeleteTask() throws Exception {
-        //Given
-
-        //When & Then
-        mockMvc
-                .perform(MockMvcRequestBuilders
-                        .delete("/v1/task/deleteTask?taskId=1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(MockMvcResultMatchers.status().is(200));
-        verify(dbService, times(1)).deleteTask(1L);
-    }
-
-    @Test
-    public void shouldUpdateTask() throws Exception {
-        //Given
-        TaskDto taskDto = new TaskDto(1L, "test1", "desc1");
-        String jsonContent = gson.toJson(taskDto);
-        Task task = new Task(1L, "test1", "desc1");
-        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(task);
-        when(dbService.saveTask(task)).thenReturn(task);
-        when(taskMapper.mapToTaskDto(task)).thenReturn(taskDto);
-
-        //When & Then
-        mockMvc
-                .perform(MockMvcRequestBuilders
-                        .put("/v1/task/updateTask")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(jsonContent)
                 )
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
@@ -138,12 +100,50 @@ class TaskControllerTest {
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/v1/task/createTask")
+                        .post("/v1/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(jsonContent)
                 )
                 .andExpect(MockMvcResultMatchers.status().is(200));
         verify(dbService, times(1)).saveTask(task);
+    }
+
+    @Test
+    public void shouldUpdateTask() throws Exception {
+        //Given
+        TaskDto taskDto = new TaskDto(1L, "test1", "desc1");
+        String jsonContent = gson.toJson(taskDto);
+        Task task = new Task(1L, "test1", "desc1");
+        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(task);
+        when(dbService.saveTask(task)).thenReturn(task);
+        when(taskMapper.mapToTaskDto(task)).thenReturn(taskDto);
+
+        //When & Then
+        mockMvc
+                .perform(MockMvcRequestBuilders
+                        .put("/v1/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent)
+                )
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("test1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("desc1")));
+    }
+
+    @Test
+    public void shouldDeleteTask() throws Exception {
+        //Given
+
+        //When & Then
+        mockMvc
+                .perform(MockMvcRequestBuilders
+                        .delete("/v1/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(MockMvcResultMatchers.status().is(200));
+        verify(dbService, times(1)).deleteTask(1L);
     }
 }
