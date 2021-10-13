@@ -32,10 +32,16 @@ public class MailCreatorService {
         context.setVariable("tasks_url", "https://patryk-ziemniak.github.io/");
         context.setVariable("button", "Visit website");
         context.setVariable("goodbye_message", "Have a nice day! :)");
-        context.setVariable("show_button", false);
-        context.setVariable("is_friend", true);
+        context.setVariable("show_button", true);
+        context.setVariable("is_friend", false);
         context.setVariable("admin_config", adminConfig);
         context.setVariable("application_functionality", functionality);
-        return templateEngine.process("mail/created-trello-card-mail", context);
+        if (message.contains("has been created on your Trello account")) {
+            return templateEngine.process("mail/created-trello-card-mail", context);
+        } else if (message.contains("Currently in database you got:")) {
+            return templateEngine.process("mail/daily-information-mail", context);
+        } else {
+            return templateEngine.process("mail/general-mail", context);
+        }
     }
 }
